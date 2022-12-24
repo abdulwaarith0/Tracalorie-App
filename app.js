@@ -49,6 +49,21 @@ const ItemCtrl = (function () {
             return newItem;
 
         },
+
+        getTotalCalories: function () {
+            let total = 0;
+            // Loop through items and add calls
+            data.items.forEach(function (item) {
+                total += item.calories;
+            });
+
+            // Set total calories in data structure
+            data.totalCalories = total;
+
+            // Return total calories
+            return data.totalCalories;
+        },
+
         logData: function () {
             return data;
         }
@@ -62,8 +77,8 @@ const UICtrl = (function () {
         itemList: "#item-list",
         addItems: ".add-btn",
         itemNameInput: "#item-name",
-        itemCalorieInput: "#item-calories"
-
+        itemCalorieInput: "#item-calories",
+        totalCalories: ".total-calories"
     };
 
     // Public Methods
@@ -71,7 +86,7 @@ const UICtrl = (function () {
         populateItemList: function (items) {
             let html = "";
 
-            items.forEach(function(item) {
+            items.forEach(function (item) {
                 html += `
                     <li id="item-${item.id}" class="collection-item">
                         <strong>${item.name}: </strong> 
@@ -123,6 +138,10 @@ const UICtrl = (function () {
             document.querySelector(UIselectors.itemList).style.display = "none";
         },
 
+        showTotalCalories: function (totalCalories) {
+            document.querySelector(UIselectors.totalCalories).textContent = totalCalories;
+        },
+
         getSelectors: function () {
             return UIselectors;
         }
@@ -157,6 +176,11 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
             // Add item to UI list
             UICtrl.addListItem(newItem);
 
+            // Get total calories
+            const totalCalories = ItemCtrl.getTotalCalories();
+
+            // Add total calories to the UI
+            UICtrl.showTotalCalories(totalCalories);
             // Clear field input
             UICtrl.clearInput();
 
@@ -181,9 +205,11 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
                 // populate list with items
                 UICtrl.populateItemList(items);
             }
+            // Get total calories
+            const totalCalories = ItemCtrl.getTotalCalories();
 
-            // Populate List With Items
-            UICtrl.populateItemList(items);
+           // Add total calories to the UI
+            UICtrl.showTotalCalories(totalCalories);
 
             // Load Event Listeners
             loadEventListeners();
