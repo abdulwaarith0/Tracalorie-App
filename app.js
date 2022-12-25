@@ -77,6 +77,18 @@ const ItemCtrl = (function () {
             return found;
         },
 
+        deleteItem: function(id) {
+            // Get ids
+            const ids = data.items.map(function(item) {
+                return item.id;
+            });
+            // Get index
+            const index = ids.indexOf(id);
+
+            // Splice / Remove item
+            data.items.splice(index, 1);
+        },
+
         setCurrentItem: function (item) {
             data.currentItem = item;
         },
@@ -189,6 +201,13 @@ const UICtrl = (function () {
             });
         },
 
+        deleteListItem: function(id) {
+            const itemId = `#item-${id}`;
+            const item = document.querySelector(itemId);
+            
+            item.remove();
+        },
+
         clearInput: function () {
             document.querySelector(UIselectors.itemNameInput).value = "";
             document.querySelector(UIselectors.itemCalorieInput).value = "";
@@ -271,6 +290,10 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
         document.querySelector(UIselectors.backBtn).addEventListener("click",   
            UICtrl.clearEditState);
 
+        // Delete item event
+        document.querySelector(UIselectors.deleteBtn).addEventListener("click", 
+          itemDeleteSubmit); 
+
     };
 
     // Add Item Submit
@@ -337,6 +360,29 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
 
         // Update UI
         UICtrl.updateListItem(updatedItem);
+
+        // Get total calories
+        const totalCalories = ItemCtrl.getTotalCalories();
+
+        // Add total calories to the UI
+        UICtrl.showTotalCalories(totalCalories);
+
+        // Clear input form after updating a food item
+        UICtrl.clearEditState(); 
+
+        e.preventDefault();
+    }
+
+    // Delete button event
+    const itemDeleteSubmit = function(e) {
+        // Get current item
+        const currentItem = ItemCtrl.getCurrentItem();
+
+        // Delete from data structure
+        ItemCtrl.deleteItem(currentItem.id);  
+
+        // Delete from UI
+        UICtrl.deleteListItem(currentItem.id);
 
         // Get total calories
         const totalCalories = ItemCtrl.getTotalCalories();
