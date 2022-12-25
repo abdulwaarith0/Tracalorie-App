@@ -23,6 +23,7 @@ const StorageCtrl = (function () {
                 localStorage.setItem("items", JSON.stringify(items));
             } 
         },
+
         getItemsFromStorage: function() {
             let items;
             if (localStorage.getItem("items") === null) {
@@ -32,6 +33,30 @@ const StorageCtrl = (function () {
             }
 
             return items;
+        },
+
+        updateItemStorage: function(updatedItem) {
+            let items = JSON.parse(localStorage.getItem("items"));
+
+            items.forEach(function(item, index) {
+                if (updatedItem.id === item.id) {
+                    items.splice(index, 1, updatedItem);
+                } 
+            });
+            // Reset local storage
+            localStorage.setItem("items", JSON.stringify(items));
+        },
+
+        deleteItemFromStorage: function(id) {
+            let items = JSON.parse(localStorage.getItem("items"));
+
+            items.forEach(function(item, index) {
+                if (id === item.id) {
+                    items.splice(index, 1);
+                } 
+            });
+            // Reset local storage
+            localStorage.setItem("items", JSON.stringify(items));
         }
     }
 })();
@@ -353,7 +378,7 @@ const AppCtrl = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
         // Check for name and calorie input
         if (input.name !== "" && input.calories !== "") {
-            console.log("Added");
+
             // Add Item 
             const newItem = ItemCtrl.addItem(input.name, input.calories);
 
@@ -391,7 +416,6 @@ const AppCtrl = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
             // Get Item
             const itemToEdit = ItemCtrl.getItemById(id);
-            console.log(itemToEdit);
 
             // Set current item 
             ItemCtrl.setCurrentItem(itemToEdit);
@@ -420,6 +444,9 @@ const AppCtrl = (function (ItemCtrl, StorageCtrl, UICtrl) {
         // Add total calories to the UI
         UICtrl.showTotalCalories(totalCalories);
 
+        // Update local storage
+        StorageCtrl.updateItemStorage(updatedItem);
+
         // Clear input form after updating a food item
         UICtrl.clearEditState();
 
@@ -442,6 +469,9 @@ const AppCtrl = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
         // Add total calories to the UI
         UICtrl.showTotalCalories(totalCalories);
+
+        // Delete from local storage
+        StorageCtrl.deleteItemFromStorage(currentItem.id);
 
         // Clear input form after updating a food item
         UICtrl.clearEditState();
@@ -496,7 +526,7 @@ const AppCtrl = (function (ItemCtrl, StorageCtrl, UICtrl) {
             // Load Event Listeners
             loadEventListeners();
         }
-    }
+    } 
 
 
 })(ItemCtrl, StorageCtrl, UICtrl);
