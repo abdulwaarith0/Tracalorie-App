@@ -263,9 +263,14 @@ const AppCtrl = (function (ItemCtrl, UICtrl) {
         document.querySelector(UIselectors.itemList).addEventListener("click",
             itemEditClick);
 
-        //Update item event
+        // Update item event
         document.querySelector(UIselectors.updateBtn).addEventListener("click",
             itemUpdateSubmit);
+
+        // Back button event
+        document.querySelector(UIselectors.backBtn).addEventListener("click",   
+           UICtrl.clearEditState);
+
     };
 
     // Add Item Submit
