@@ -57,6 +57,10 @@ const StorageCtrl = (function () {
             });
             // Reset local storage
             localStorage.setItem("items", JSON.stringify(items));
+        },
+
+        clearItemsFromStorage: function() {
+            localStorage.removeItem("items");
         }
     }
 })();
@@ -478,7 +482,8 @@ const AppCtrl = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
         e.preventDefault();
     }
-
+    
+    // Clear all items event
     const clearAllItemsClick = function (e) {
 
         // Delete all items from data structure
@@ -492,6 +497,9 @@ const AppCtrl = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
         // Remove from UI
         UICtrl.removeItems();
+
+        // Clear from local storage
+        StorageCtrl.clearItemsFromStorage();
 
         // Hide ul
         UICtrl.hideList();
